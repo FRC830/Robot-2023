@@ -9,6 +9,9 @@
 #include <frc/livewindow/LiveWindow.h>
 #include <frc2/command/CommandScheduler.h>
 
+#include <frc/Preferences.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+
 void Robot::RobotInit() noexcept
 {
   frc::LiveWindow::SetEnabled(false);
@@ -16,6 +19,21 @@ void Robot::RobotInit() noexcept
 
   frc::DataLogManager::Start();
   frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
+
+
+  //create a feild for realignment
+  frc::SmartDashboard::PutNumber("0 if realign", 1);
+
+
+  // Create feilds in the persistant preferences for all the wheel alignment offsets if they don't already exist
+  // This will not override any existing preferences
+  frc::Preferences::InitDouble(physical::kFrontLeftAlignmentOffsetKey, physical::kFrontLeftAlignmentOffset);
+  frc::Preferences::InitDouble(physical::kFrontRightAlignmentOffsetKey, physical::kFrontRightAlignmentOffset);
+  frc::Preferences::InitDouble(physical::kRearLeftAlignmentOffsetKey, physical::kRearLeftAlignmentOffset);
+  frc::Preferences::InitDouble(physical::kRearRightAlignmentOffsetKey, physical::kRearRightAlignmentOffset);
+
+  // Read from the preferences and set the alignment offests to those values
+  // FIXME: call SetAlignment()
 }
 
 /**
@@ -32,6 +50,15 @@ void Robot::RobotInit() noexcept
 void Robot::RobotPeriodic() noexcept
 {
   frc2::CommandScheduler::GetInstance().Run();
+
+  if (frc::SmartDashboard::GetNumber("0 if realign", 1) == 0)
+  {
+    // Read from the preferences and set the alignment offests to those values
+    // FIXME: call SetAlignment()
+
+    // FIXME: should this be SetNumber()?
+    frc::SmartDashboard::GetNumber("0 if realign", 1);
+  }
 }
 
 /**

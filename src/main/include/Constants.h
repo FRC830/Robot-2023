@@ -14,6 +14,10 @@ namespace physical
     constexpr int kFrontRightAlignmentOffset = +445;
     constexpr int kRearLeftAlignmentOffset = -16;
     constexpr int kRearRightAlignmentOffset = -201;
+    static constexpr std::string_view kFrontLeftAlignmentOffsetKey = "FrontLeftAlignmentOffset";
+    static constexpr std::string_view kFrontRightAlignmentOffsetKey = "FrontRightAlignmentOffset";
+    static constexpr std::string_view kRearLeftAlignmentOffsetKey = "RearLeftAlignmentOffset";
+    static constexpr std::string_view kRearRightAlignmentOffsetKey = "RearRightAlignmentOffset";
 
     // SDS Mk3 Standard (or Fast) Gear Ratio: 8.16:1 (or 6.86:1);
     // Nominal Wheel Diameter (4"): =0.1016m;
