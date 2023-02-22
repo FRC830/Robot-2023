@@ -67,16 +67,16 @@ namespace physical
     constexpr units::meter_t kWheelBase = 22.5_in;
 
     // CAN ID and Digital I/O Port assignments.
-    constexpr int kFrontLeftTurningMotorCanID = 1;
-    constexpr int kFrontLeftDriveMotorCanID = 2;
-    constexpr int kFrontRightTurningMotorCanID = 3;
-    constexpr int kFrontRightDriveMotorCanID = 4;
-    constexpr int kRearLeftTurningMotorCanID = 5;
-    constexpr int kRearLeftDriveMotorCanID = 6;
-    constexpr int kRearRightTurningMotorCanID = 7;
+    constexpr int kFrontLeftTurningMotorCanID = 2;
+    constexpr int kFrontLeftDriveMotorCanID = 6;
+    constexpr int kFrontRightTurningMotorCanID = 1;
+    constexpr int kFrontRightDriveMotorCanID = 5;
+    constexpr int kRearLeftTurningMotorCanID = 3;
+    constexpr int kRearLeftDriveMotorCanID = 7;
+    constexpr int kRearRightTurningMotorCanID = 4;
     constexpr int kRearRightDriveMotorCanID = 8;
-    constexpr int kFrontLeftTurningEncoderPort = 0;
-    constexpr int kFrontRightTurningEncoderPort = 1;
+    constexpr int kFrontLeftTurningEncoderPort = 1;
+    constexpr int kFrontRightTurningEncoderPort = 0;
     constexpr int kRearLeftTurningEncoderPort = 2;
     constexpr int kRearRightTurningEncoderPort = 3;
 
