@@ -19,15 +19,15 @@ namespace physical
     static constexpr std::string_view kRearLeftAlignmentOffsetKey = "RearLeftAlignmentOffset";
     static constexpr std::string_view kRearRightAlignmentOffsetKey = "RearRightAlignmentOffset";
 
-    // SDS Mk3 Standard (or Fast) Gear Ratio: 8.16:1 (or 6.86:1);
-    // Nominal Wheel Diameter (4"): =0.1016m;
-    // Nominal Wheel Circumference (pi * Diameter): ~0.3192m;
-    // 8.16 / 0.3192 => ~25.57.
+    // swervex Standard (or Fast) Gear Ratio: 5.5:1 (or 6.86:1);
+    // Nominal Wheel Diameter (3.5"): =0.0889m;
+    // Nominal Wheel Circumference (pi * Diameter): ~0.2793m;
+    // 5.5 / 0.2793 => ~19.69.
 
     // This should be empirically determined!  This is just an initial guess.
     // This is used for both distance and velocity control.  If this is off, it
     // will throw off kMaxDriveSpeed and kMaxTurnRate, as well as drive values.
-    constexpr units::meter_t kDriveMetersPerRotation = 1.0_m / 25.57;
+    constexpr units::meter_t kDriveMetersPerRotation = 1.0_m / 19.69;
 
     // SDS Mk3 Standard (or Fast) Max Free Speed: 12.1 (or 14.4) feet/second;
     // This is an upper bound, for various reasons.  It needs to be empirically
