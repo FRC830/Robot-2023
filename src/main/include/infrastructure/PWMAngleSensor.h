@@ -2,8 +2,7 @@
 
 #include "infrastructure/ShuffleboardWidgets.h"
 
-#include <frc/DigitalInput.h>
-#include <frc/DutyCycle.h>
+#include <frc/AnalogEncoder.h>
 #include <frc/shuffleboard/ShuffleboardContainer.h>
 #include <units/angle.h>
 
@@ -35,12 +34,13 @@ public:
 
 private:
     // Range is [-2048, +2048).
-    std::optional<int> GetAbsolutePosition(const int frequency, const double output, const bool applyOffset) noexcept;
+    // 830: removed frequency arg
+    std::optional<int> GetAbsolutePosition(const double output, const bool applyOffset) noexcept;
 
     int alignment_{0};
 
-    std::unique_ptr<frc::DigitalInput> digitalInput_;
-    std::unique_ptr<frc::DutyCycle> dutyCycle_;
+    // 830: REPLACED
+    std::unique_ptr<frc::AnalogEncoder> encoder_;
 
     std::function<std::pair<units::angle::degree_t, units::angle::degree_t>()> getCommandedAndEncoderPositionsF_{nullptr};
     HeadingGyro headingGyro_;

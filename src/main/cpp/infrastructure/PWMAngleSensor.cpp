@@ -4,8 +4,8 @@
 
 AngleSensor::AngleSensor(const int channel, const int alignment) noexcept : alignment_{alignment}
 {
-    digitalInput_ = std::make_unique<frc::DigitalInput>(channel);
-    dutyCycle_ = std::make_unique<frc::DutyCycle>(*digitalInput_);
+    // 830: REPLACED
+    encoder_ = std::make_unique<frc::AnalogEncoder>(channel);
 }
 
 void AngleSensor::Periodic() noexcept
@@ -27,9 +27,8 @@ void AngleSensor::Periodic() noexcept
         encoderPosition = std::get<1>(pair);
     }
 
-    const int frequency = dutyCycle_->GetFrequency();
-    const double output = dutyCycle_->GetOutput();
-    const auto position = GetAbsolutePosition(frequency, output, false);
+    const double output = encoder_->GetAbsolutePosition();  // 830: updated for AnalogEncoder
+    const auto position = GetAbsolutePosition(output, false);
     const bool status = position.has_value();
     int reportPosition{0};
 
@@ -73,7 +72,7 @@ void AngleSensor::Periodic() noexcept
         encoderError -= 360.0;
     }
 
-    frequencyUI_->GetEntry()->SetDouble(static_cast<double>(frequency));
+    // 830: removed frequency
     commandDiscrepancyUI_->GetEntry()->SetDouble(commandedError);
     statusUI_->GetEntry()->SetBoolean(status);
     commandedUI_->GetEntry()->SetDouble(commandedPosition.to<double>());
@@ -124,7 +123,7 @@ void AngleSensor::ShuffleboardCreate(frc::ShuffleboardContainer &container,
 
 std::optional<units::angle::degree_t> AngleSensor::GetAbsolutePosition() noexcept
 {
-    const auto position = GetAbsolutePosition(dutyCycle_->GetFrequency(), dutyCycle_->GetOutput(), true);
+    const auto position = GetAbsolutePosition(encoder_->GetAbsolutePosition(), true); // 830: switched to AnalogEncoder
 
     if (!position.has_value())
     {
@@ -136,7 +135,7 @@ std::optional<units::angle::degree_t> AngleSensor::GetAbsolutePosition() noexcep
 
 std::optional<int> AngleSensor::GetAbsolutePositionWithoutAlignment() noexcept
 {
-    return GetAbsolutePosition(dutyCycle_->GetFrequency(), dutyCycle_->GetOutput(), false);
+    return GetAbsolutePosition(encoder_->GetAbsolutePosition(), false); // 830: switched to AnalogEncoder
 }
 
 // Calulate absolute turning position in the range [-2048, +2048), from the raw
@@ -147,7 +146,9 @@ std::optional<int> AngleSensor::GetAbsolutePositionWithoutAlignment() noexcept
 // This is a low-level routine, meant to be used only by the version of
 // GetAbsolutePosition() with no arguments (above) or, from test mode.  It does
 // not use standardized units and leaks knowledge of the sensor output range.
-std::optional<int> AngleSensor::GetAbsolutePosition(const int frequency, const double output, const bool applyOffset) noexcept
+
+// 830: removed frequency arg
+std::optional<int> AngleSensor::GetAbsolutePosition(const double output, const bool applyOffset) noexcept
 {
     // SRX MAG ENCODER chip seems to be AS5045B; from the datasheet, position
     // is given by:
@@ -155,27 +156,7 @@ std::optional<int> AngleSensor::GetAbsolutePosition(const int frequency, const d
     //   if this result is 4096, set it to 4095.
     // This computation results in a position in the range [0, 4096).
 
-    // REV Through Bore Encoder chip is AEAT-8800-Q24, which has configurable
-    // PWM parameters.  However, it seems to be configured to match AS5045B, so
-    // it works without any changes.  A factory preset zero offset may allow no
-    // alignment (simply specify an alignment of zero).
-
-    // If the frequency isn't within the range specified in the data sheet,
-    // return an error.  This range is [220, 268], with a nominal value of 244.
-    // A tolerance of 12 (~5% of nominal) is provided for any measurment error.
-    bool absoluteSensorGood = frequency >= 208 && frequency <= 280;
-
-    if (!absoluteSensorGood)
-    {
-        return std::nullopt;
-    }
-
-    // GetOutput() is (t_on / (t_on + t_off)); this is all that we have; note
-    // that this is sampled at a high frequency and the sampling window may not
-    // be perfectly aligned with the signal, although the frequency should be
-    // employed to ensure the sampling window is sized to a multiple of the
-    // period of the signal.  So, t_on and t_off have a different scale in this
-    // context, which is OK.  We are using the duty cycle (ratio) only.
+    // 830: removed frequency check
 
     // Multiply by 4098 and subtract 1; should yield 0 - 4094, and also 4096.
     // Conditionals cover special case of 4096 and enforce the specified range.
