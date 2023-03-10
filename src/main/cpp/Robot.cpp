@@ -185,12 +185,20 @@ void Robot::DisabledPeriodic() noexcept {}
 void Robot::AutonomousInit() noexcept
 {
   
-  m_driveSubsystem.SetDefaultCommand(*m_driveCommand);
+  //m_driveSubsystem.SetDefaultCommand(*m_driveCommand);
 }
 
 void Robot::AutonomousPeriodic() noexcept {
 
-  m_driveSubsystem.Drive(-0.55_mps, 0_mps, 0_deg_per_s, false);
+  if (counter < 300)
+  {
+    m_driveSubsystem.Drive(1_mps, 0_mps, 0_deg_per_s, false);
+    counter += 1;
+  }
+  else
+  {
+    m_driveSubsystem.Drive(0_mps, 0_mps, 0_deg_per_s, false);
+  }
 
   //m_auton.runAuton(0);
   //m_auton.runAuton(autonChooser.GetSelected(), &m_driveSubsystem);
@@ -211,7 +219,34 @@ void Robot::TeleopInit() noexcept {
 /**
  * This function is called periodically during operator control.
  */
-void Robot::TeleopPeriodic() noexcept {}
+void Robot::TeleopPeriodic() noexcept {
+    if (m_xbox.GetRightTriggerAxis() > 0.4)
+  {
+    frc::SmartDashboard::PutNumber("arm", 400);
+    std::cout << "arm up" << std::endl;
+    m_subsystems.RotateArm(true);
+  }
+  else if (m_xbox.GetLeftTriggerAxis() > 0.4)
+  {
+    frc::SmartDashboard::PutNumber("arm", 300);
+    std::cout << "arm down" << std::endl;
+    m_subsystems.RotateArm(false);
+  }
+
+  //m_xbox.LeftTrigger(0.4, &eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(false);});
+
+  // m_xbox.POVUp(&eventLoop).IfHigh([&]() -> void  {m_lock = true;});
+  // m_xbox.POVDown(&eventLoop).IfHigh([&]() -> void  {m_lock = false;});
+
+  if (m_xbox.GetPOV() > 0 && m_xbox.GetPOV() < 180)
+  {
+    m_lock = true;
+  }
+  else if (m_xbox.GetPOV() > 180 && m_xbox.GetPOV() < 360)
+  {
+    m_lock = false;
+  }
+}
 
 void Robot::TeleopExit() noexcept {}
 
@@ -262,12 +297,8 @@ void Robot::ConfigureButtonBindings() noexcept
                                                                                                   { m_subsystems.moveTelescopethingy(true); },
                                                                                                   {&m_subsystems}));
   
-  m_xbox.RightTrigger(0.4, &eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(true);});
+  //m_xbox.RightTrigger(0.4, &eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(true);});
 
-  m_xbox.LeftTrigger(0.4, &eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(false);});
-
-  m_xbox.POVUp(&eventLoop).IfHigh([&]() -> void  {m_lock = true;});
-  m_xbox.POVDown(&eventLoop).IfHigh([&]() -> void  {m_lock = false;});
 
   //telescope 
 
@@ -322,15 +353,20 @@ std::tuple<double, double, double, bool> Robot::GetDriveTeleopControls() noexcep
 
   if (m_slow)
   {
-    x *= 0.50;
-    y *= 0.50;
+    x *= 0.35;
+    y *= 0.35;
     z *= 0.40;
   }
   else
   { // XXX Still needed?
-    x *= 2.0;
-    y *= 2.0;
+    x *= abs(x) * 0.75;
+    y *= abs(y) * 0.75;
     z *= 1.6;
+  }
+
+  if (abs(x) > 0.1 || abs(y) > 0.1 || abs(z) > 0.1)
+  {
+    m_lock = false;
   }
 
   return std::make_tuple(x, y, z, m_fieldOriented);

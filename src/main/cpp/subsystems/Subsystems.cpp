@@ -30,17 +30,17 @@ void Subsystems::SubsystemsInit()
 
 void Subsystems::SubsystemsPeriodic()
 {
-    ArmMotor.Set(ArmPIDController.Calculate(ArmMotorEncoder.Get()));
+    ArmMotor.Set(ArmPIDController.Calculate(GetArmEncoderAngle()));
     SetArmPIDF
     (
-        cos(ArmMotorEncoder.Get()*(3.14 /180)) * TeleMotorEncoder.Get() * 
-            frc::SmartDashboard::GetNumber("ArmPCoefficient", pidf::kArmP) +
-            frc::SmartDashboard::GetNumber("ArmPAdder", 0), 
+        /*cos(GetArmEncoderAngle()*(3.14 /180)) * TeleMotorEncoder.GetPosition() * 
+            */frc::SmartDashboard::GetNumber("ArmPCoefficient", pidf::kArmP) /*+/*
+            /*frc::SmartDashboard::GetNumber("ArmPAdder", 0)*/, 
         frc::SmartDashboard::GetNumber("ArmI", pidf::kArmI), 
         frc::SmartDashboard::GetNumber("ArmD", pidf::kArmD)
     );
 
-    teleMotor.Set(TelePIDController.Calculate(TeleMotorEncoder.Get()));
+    teleMotor.Set(TelePIDController.Calculate(TeleMotorEncoder.GetPosition()));
     SetTelePIDF
     (
         frc::SmartDashboard::GetNumber("TeleP", pidf::kTeleP), 
@@ -53,18 +53,19 @@ void Subsystems::SubsystemsPeriodic()
 
     if (settingArm)
     {
-        SetArmPIDTarget (frc::SmartDashboard::GetNumber("Arm PID target to Set to for manual setting", ArmMotorEncoder.Get())); 
+        SetArmPIDTarget (frc::SmartDashboard::GetNumber("Arm PID target to Set to for manual setting", GetArmEncoderAngle())); 
     }
     if (settingTele)
     {
-        SetTelePIDTarget (frc::SmartDashboard::GetNumber("Arm PID target to Set to for manual setting", TeleMotorEncoder.Get()));
+        SetTelePIDTarget (frc::SmartDashboard::GetNumber("Arm PID target to Set to for manual setting", TeleMotorEncoder.GetPosition()));
     }
 
     frc::SmartDashboard::PutBoolean("Set this to True if Set Tele PID Target", false);
     frc::SmartDashboard::PutBoolean("Set this to True if Set Arm PID Target", false);
 
-    frc::SmartDashboard::PutNumber("Arm Position", ArmMotorEncoder.Get());
-    frc::SmartDashboard::PutNumber("Tele Position", TeleMotorEncoder.Get());
+
+    frc::SmartDashboard::PutNumber("Arm Position", GetArmEncoderAngle());
+    frc::SmartDashboard::PutNumber("Tele Position", TeleMotorEncoder.GetPosition());
     frc::SmartDashboard::PutNumber("Arm PID Target", ArmPIDController.GetSetpoint());
     frc::SmartDashboard::PutNumber("Tele PID Target", TelePIDController.GetSetpoint());
 }
@@ -141,8 +142,8 @@ void Subsystems::SetArmPIDTarget(int target)
     {
         std::cout << "Arm out of Bounds" << std::endl;
     }
-}
 
+}
 void Subsystems::SetTelePIDTarget(int target)
 {
     if (target < MaxTeleAngle && target > MinTeleAngle)
@@ -153,4 +154,10 @@ void Subsystems::SetTelePIDTarget(int target)
     {
         std::cout << "Tele out of Bounds" << std::endl;
     }
+}
+
+
+int Subsystems::GetArmEncoderAngle()
+{
+    return (ArmMotorEncoder.GetAbsolutePosition() - 0.16)*(90/0.065);
 }

@@ -62,6 +62,8 @@ private:
 
   Auton m_auton;
 
+  int counter = 0;
+
   std::unique_ptr<frc2::RunCommand> m_driveCommand;
   std::unique_ptr<frc2::RunCommand> m_pointCommand;
   

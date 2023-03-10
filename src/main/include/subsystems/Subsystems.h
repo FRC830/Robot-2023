@@ -2,7 +2,7 @@
 #include <frc/controller/PIDController.h>
 #include <rev/CANSparkMax.h>
 #include <frc2/command/SubsystemBase.h>
-#include <frc/Encoder.h>
+#include <frc/AnalogEncoder.h>
 #include "../Constants.h"
 
 
@@ -33,18 +33,18 @@ class Subsystems : public frc2::SubsystemBase
         double GrabberWheelSpeeds = 0.5;
 
         double ArmSpeed = 0.5;
-        int MinArmAngle = 30;
-        int MaxArmAngle = 250;
+        int MinArmAngle = -60;
+        int MaxArmAngle = 60;
         int ArmAngleBufferSize = 20;
 
-        double TeleSpeed = 0.5;
-        int MinTeleAngle = 30;
+        double TeleSpeed = 1;
+        int MinTeleAngle = 10;
         int MaxTeleAngle = 250;
-        int TeleAngleBufferSize = 20;
+        int TeleAngleBufferSize = 20;   
         
         //Status Variables
         bool GrabberOnOff = false;
-
+ 
         //PID Control
         frc2::PIDController ArmPIDController;
         frc2::PIDController TelePIDController;
@@ -55,8 +55,12 @@ class Subsystems : public frc2::SubsystemBase
         rev::CANSparkMax GrabberWheelsMotor =  rev::CANSparkMax(10, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
 
         rev::CANSparkMax ArmMotor = rev::CANSparkMax(11, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
-        frc::Encoder ArmMotorEncoder {0, 1};
+        frc::AnalogEncoder ArmMotorEncoder {5};
+
 
         rev::CANSparkMax teleMotor = rev::CANSparkMax(12, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
-        frc::Encoder TeleMotorEncoder = {2, 3};
+        rev::SparkMaxRelativeEncoder TeleMotorEncoder = teleMotor.GetEncoder();
+        
+
+  int GetArmEncoderAngle();
 };

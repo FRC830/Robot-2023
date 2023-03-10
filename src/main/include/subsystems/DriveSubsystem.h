@@ -239,7 +239,7 @@ private:
   // Test Mode modification of behavior, allows low-level control and
   // modification of drive speed.
   bool m_run{true};
-  double m_limit{4.5};
+  double m_limit{3.5};
   bool m_graph{false};
   double m_testModeTurningVoltage{0.0};
   double m_testModeDriveVoltage{0.0};
