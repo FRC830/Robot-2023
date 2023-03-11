@@ -73,4 +73,6 @@ private:
   frc::GenericHID m_buttonBoard{1};
 
   frc::SendableChooser<int> autonChooser;
+
+  bool turbo = false;
 };

@@ -270,6 +270,15 @@ void Robot::TeleopPeriodic() noexcept {
   {
     m_subsystems.moveTelescopethingy(false);
   }
+
+  if (m_xbox.GetLeftTriggerAxis() > 0.1)
+  {
+    turbo = true;
+  }
+  else 
+  {
+    turbo = false;
+  }
 }
 
 void Robot::TeleopExit() noexcept {}
@@ -371,6 +380,12 @@ std::tuple<double, double, double, bool> Robot::GetDriveTeleopControls() noexcep
     x *= 0.35;
     y *= 0.35;
     z *= 0.40;
+  }
+  else if (turbo)
+  {
+    x *= 0.95;
+    y *= 0.95;
+    z *= abs(z) * 0.8;
   }
   else
   { // XXX Still needed?
