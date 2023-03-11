@@ -72,7 +72,12 @@ void Subsystems::SubsystemsPeriodic()
 
 void Subsystems::SetGrabberWheels(bool direction)
 {
-    GrabberWheelsMotor.Set(GrabberWheelSpeeds * direction);
+    GrabberWheelsMotor.Set(GrabberWheelSpeeds *-1);
+}
+
+void Subsystems::DisableGrabberWheels()
+{
+    GrabberWheelsMotor.Set(GrabberWheelSpeeds *-1);
 }
 void Subsystems::ToggleGrabberPnumatics()
 {

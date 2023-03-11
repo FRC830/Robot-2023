@@ -246,6 +246,19 @@ void Robot::TeleopPeriodic() noexcept {
   {
     m_lock = false;
   }
+
+  if (m_xbox.GetXButton())
+  {
+    m_subsystems.SetGrabberWheels(true);
+  }
+  else if (m_xbox.GetYButton())
+  {
+    m_subsystems.SetGrabberWheels(false);
+  }
+  else if (!(m_xbox.GetXButton() || m_xbox.GetYButton()))
+  {
+    m_subsystems.DisableGrabberWheels();
+  }
 }
 
 void Robot::TeleopExit() noexcept {}
@@ -283,10 +296,8 @@ void Robot::ConfigureButtonBindings() noexcept
                                                                     
                                                                                                   { m_subsystems.SetGrabberWheels(true); },
                                                                                                   {&m_subsystems}));
-  frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kY).WhenPressed(frc2::InstantCommand([&]() -> void
-                                                                    
-                                                                                                  {  m_subsystems.SetGrabberWheels(false); },
-                                                                                                  {&m_subsystems}));
+
+
 
   frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kLeftBumper).WhenPressed(frc2::InstantCommand([&]() -> void
                                                                     

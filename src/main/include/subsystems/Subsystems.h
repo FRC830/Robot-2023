@@ -21,6 +21,7 @@ class Subsystems : public frc2::SubsystemBase
         void moveTelescopethingy(bool direction);
         void StopTelescope();
         
+        void DisableGrabberWheels();
         void SetArmPIDF (double p, double i, double d);
         void SetArmPIDTarget (int target);
         void SetTelePIDF (double p, double i, double d);
@@ -60,6 +61,7 @@ class Subsystems : public frc2::SubsystemBase
 
         rev::CANSparkMax teleMotor = rev::CANSparkMax(12, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
         rev::SparkMaxRelativeEncoder TeleMotorEncoder = teleMotor.GetEncoder();
+
         
 
   int GetArmEncoderAngle();
