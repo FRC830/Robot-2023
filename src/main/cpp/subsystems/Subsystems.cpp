@@ -20,6 +20,10 @@ void Subsystems::SubsystemsInit()
   frc::SmartDashboard::PutNumber("TeleD", pidf::kTeleD);
   teleMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
+  
+
+TelePIDController.SetSetpoint(-20);
+
   frc::SmartDashboard::PutBoolean("Set this to True if Set Tele PID Target", false);
   frc::SmartDashboard::PutBoolean("Set this to True if Set Arm PID Target", false);
 
@@ -30,15 +34,22 @@ void Subsystems::SubsystemsInit()
 
 void Subsystems::SubsystemsPeriodic()
 {
+    frc::SmartDashboard::PutNumber("Arm Motor Speed From PID", ArmPIDController.Calculate(GetArmEncoderAngle()));
     ArmMotor.Set(ArmPIDController.Calculate(GetArmEncoderAngle()));
     SetArmPIDF
     (
-        /*cos(GetArmEncoderAngle()*(3.14 /180)) * TeleMotorEncoder.GetPosition() * 
-            */frc::SmartDashboard::GetNumber("ArmPCoefficient", pidf::kArmP) /*+/*
-            /*frc::SmartDashboard::GetNumber("ArmPAdder", 0)*/, 
+        frc::SmartDashboard::GetNumber("ArmPCoefficient", pidf::kArmP), 
         frc::SmartDashboard::GetNumber("ArmI", pidf::kArmI), 
         frc::SmartDashboard::GetNumber("ArmD", pidf::kArmD)
-    );
+    ); //-15, full extension is scoring
+    // SetArmPIDF
+    // (
+    //     sin(GetArmEncoderAngle()*(3.14 /180)) * TeleMotorEncoder.GetPosition() * 
+    //         frc::SmartDashboard::GetNumber("ArmPCoefficient", pidf::kArmP) +
+    //         frc::SmartDashboard::GetNumber("ArmPAdder", 0), 
+    //     frc::SmartDashboard::GetNumber("ArmI", pidf::kArmI), 
+    //     frc::SmartDashboard::GetNumber("ArmD", pidf::kArmD)
+    // );
 
     teleMotor.Set(TelePIDController.Calculate(TeleMotorEncoder.GetPosition()));
     SetTelePIDF
@@ -72,22 +83,30 @@ void Subsystems::SubsystemsPeriodic()
 
 void Subsystems::SetGrabberWheels(bool direction)
 {
-    GrabberWheelsMotor.Set(GrabberWheelSpeeds *-1);
+    if (direction)
+    {GrabberWheelsMotor.Set(GrabberWheelSpeeds *-1);}
+    else 
+    {
+        GrabberWheelsMotor.Set(GrabberWheelSpeeds);
+    }
 }
 
 void Subsystems::DisableGrabberWheels()
 {
-    GrabberWheelsMotor.Set(GrabberWheelSpeeds *-1);
+    GrabberWheelsMotor.Set(0);
 }
 void Subsystems::ToggleGrabberPnumatics()
 {
-    if (GrabberOnOff)
+    
+    if (!GrabberOnOff)
     {
         GrabberSolenoid.Set(true);
+        GrabberOnOff = false;
     }
     else
     {
         GrabberSolenoid.Set(false);
+        GrabberOnOff = true;
     }
 
     GrabberOnOff = !GrabberOnOff;
@@ -109,13 +128,17 @@ void Subsystems::SetTelePIDF(double p, double i, double d)
     //ArmPIDController.SetF(f);
 }
 
-void Subsystems::RotateArm(bool direction)
+void Subsystems::RotateArm(bool input)
 {
+
+    int direction;
+    input ? direction = 1 : direction = -1;
+
     auto setpoint = ArmPIDController.GetSetpoint();
 
     if (setpoint + ArmSpeed * direction < MaxArmAngle && setpoint + ArmSpeed * direction > MinArmAngle)//buffer could be applied here
     {
-        ArmPIDController.SetSetpoint(setpoint + ArmSpeed);
+        ArmPIDController.SetSetpoint(setpoint + ArmSpeed * direction);
     }
     else
     {
@@ -123,17 +146,20 @@ void Subsystems::RotateArm(bool direction)
     }
 }
 
-void Subsystems::moveTelescopethingy(bool direction)
+void Subsystems::moveTelescopethingy(bool input)
 {
+    int direction;
+    input ? direction = 1 : direction = -1;
     auto setpoint = TelePIDController.GetSetpoint();
 
-    if (setpoint + TeleSpeed * direction < MaxTeleAngle && setpoint +TeleSpeed * direction > MinTeleAngle)//buffer could be applied here
+    if (setpoint + TeleSpeed * direction < MaxTeleAngle && setpoint + TeleSpeed * direction > MinTeleAngle)//buffer could be applied here
     {
-       TelePIDController.SetSetpoint(setpoint +TeleSpeed);
+        std::cout << "moving tele" << std::endl;   
+       TelePIDController.SetSetpoint(setpoint + TeleSpeed * direction);
     }
     else
     {
-        std::cout << "Arm out of Bounds" << std::endl;
+        std::cout << "Tele out of Bounds" << std::endl;
     }
 }
 
@@ -151,7 +177,7 @@ void Subsystems::SetArmPIDTarget(int target)
 }
 void Subsystems::SetTelePIDTarget(int target)
 {
-    if (target < MaxTeleAngle && target > MinTeleAngle)
+    if (target > MaxTeleAngle && target < MinTeleAngle)
     {
         TelePIDController.SetSetpoint(target);
     }

@@ -31,17 +31,17 @@ class Subsystems : public frc2::SubsystemBase
         void SubsystemsPeriodic ();
     private:
         //Constants
-        double GrabberWheelSpeeds = 0.5;
+        double GrabberWheelSpeeds = 1.0;
 
-        double ArmSpeed = 0.5;
-        int MinArmAngle = -60;
-        int MaxArmAngle = 60;
+        double ArmSpeed = 0.75;
+        int MinArmAngle = -62;
+        int MaxArmAngle = 100;
         int ArmAngleBufferSize = 20;
 
-        double TeleSpeed = 1;
-        int MinTeleAngle = 10;
-        int MaxTeleAngle = 250;
-        int TeleAngleBufferSize = 20;   
+        double TeleSpeed = 0.30;
+        int MinTeleAngle = -55000000;
+        int MaxTeleAngle = 10000000;
+        int TeleAngleBufferSize = 2;   
         
         //Status Variables
         bool GrabberOnOff = false;

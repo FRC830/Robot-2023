@@ -93,7 +93,6 @@ public:
              units::meters_per_second_t ySpeed, units::radians_per_second_t rot,
              bool fieldRelative) noexcept
   {
-    std::cout << "driving" << std::endl;
     Drive(xSpeed, ySpeed, rot, fieldRelative, 0.0_m, 0.0_m);
   }
 

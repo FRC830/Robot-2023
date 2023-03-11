@@ -123,6 +123,8 @@ void Robot::RobotInit() noexcept
 // latter case, TestPeriodic() handles manually driven act.
 void Robot::RobotPeriodic() noexcept
 {
+
+  frc::SmartDashboard::PutNumber("co RightY", m_Copilot.GetRightY());
   
   frc2::CommandScheduler::GetInstance().Run();
 
@@ -220,44 +222,53 @@ void Robot::TeleopInit() noexcept {
  * This function is called periodically during operator control.
  */
 void Robot::TeleopPeriodic() noexcept {
-    if (m_xbox.GetRightTriggerAxis() > 0.4)
+    if (m_Copilot.GetRightTriggerAxis() > 0.4)
   {
     frc::SmartDashboard::PutNumber("arm", 400);
-    std::cout << "arm up" << std::endl;
     m_subsystems.RotateArm(true);
   }
-  else if (m_xbox.GetLeftTriggerAxis() > 0.4)
+  else if (m_Copilot.GetLeftTriggerAxis() > 0.4)
   {
     frc::SmartDashboard::PutNumber("arm", 300);
-    std::cout << "arm down" << std::endl;
     m_subsystems.RotateArm(false);
   }
 
-  //m_xbox.LeftTrigger(0.4, &eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(false);});
+  //m_Copilot.LeftTrigger(0.4, &eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(false);});
 
-  // m_xbox.POVUp(&eventLoop).IfHigh([&]() -> void  {m_lock = true;});
-  // m_xbox.POVDown(&eventLoop).IfHigh([&]() -> void  {m_lock = false;});
+  // m_Copilot.POVUp(&eventLoop).IfHigh([&]() -> void  {m_lock = true;});
+  // m_Copilot.POVDown(&eventLoop).IfHigh([&]() -> void  {m_lock = false;});
 
-  if (m_xbox.GetPOV() > 0 && m_xbox.GetPOV() < 180)
+  if (m_Copilot.GetPOV() > 0 && m_Copilot.GetPOV() < 180)
   {
     m_lock = true;
   }
-  else if (m_xbox.GetPOV() > 180 && m_xbox.GetPOV() < 360)
+  else if (m_Copilot.GetPOV() > 180 && m_Copilot.GetPOV() < 360)
   {
     m_lock = false;
   }
 
-  if (m_xbox.GetXButton())
+  if (m_Copilot.GetXButton())
   {
     m_subsystems.SetGrabberWheels(true);
   }
-  else if (m_xbox.GetYButton())
+  else if (m_Copilot.GetYButton())
   {
     m_subsystems.SetGrabberWheels(false);
   }
-  else if (!(m_xbox.GetXButton() || m_xbox.GetYButton()))
+  else if (!(m_Copilot.GetXButton() || m_Copilot.GetYButton()))
   {
     m_subsystems.DisableGrabberWheels();
+  }
+
+  frc::SmartDashboard::PutNumber("co RightY", m_Copilot.GetRightY());
+
+  if (m_Copilot.GetRightY() > 0.15)
+  {
+    m_subsystems.moveTelescopethingy(true);
+  }
+  else if (m_Copilot.GetRightY() < -0.15)
+  {
+    m_subsystems.moveTelescopethingy(false);
   }
 }
 
@@ -282,8 +293,8 @@ void Robot::ConfigureButtonBindings() noexcept
   frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kA).WhenPressed(frc2::InstantCommand([&]() -> void
                                                                                                   { m_slow = !m_slow; },
                                                                                                   {}));
-  frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kB).WhenPressed(frc2::InstantCommand([&]() -> void
-                                                                                                  { m_subsystems.ToggleGrabberPnumatics(); },
+  frc2::JoystickButton(&m_Copilot, frc::XboxController::Button::kB).WhenPressed(frc2::InstantCommand([&]() -> void
+                                                                                                  { m_subsystems.ToggleGrabberPnumatics(); std::cout << "pnumatics toggled" << std::endl;},
                                                                                                   {&m_subsystems}));
 
   frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kStart).WhenPressed(frc2::InstantCommand([&]() -> void
@@ -292,21 +303,14 @@ void Robot::ConfigureButtonBindings() noexcept
   frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kBack).WhenPressed(frc2::InstantCommand([&]() -> void
                                                                                                   {  m_fieldOriented = false; },
                                                                                                   {}));
-  frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kX).WhenPressed(frc2::InstantCommand([&]() -> void
+  // frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kX).WhenPressed(frc2::InstantCommand([&]() -> void
                                                                     
-                                                                                                  { m_subsystems.SetGrabberWheels(true); },
-                                                                                                  {&m_subsystems}));
+  //                                                                                                 { m_subsystems.SetGrabberWheels(true); },
+  //                                                                                                 {&m_subsystems}));
 
 
 
-  frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kLeftBumper).WhenPressed(frc2::InstantCommand([&]() -> void
-                                                                    
-                                                                                                  { m_subsystems.moveTelescopethingy(false); },
-                                                                                                  {&m_subsystems}));
-  frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kRightBumper).WhenPressed(frc2::InstantCommand([&]() -> void
-                                                                    
-                                                                                                  { m_subsystems.moveTelescopethingy(true); },
-                                                                                                  {&m_subsystems}));
+
   
   //m_xbox.RightTrigger(0.4, &eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(true);});
 
@@ -372,7 +376,7 @@ std::tuple<double, double, double, bool> Robot::GetDriveTeleopControls() noexcep
   { // XXX Still needed?
     x *= abs(x) * 0.75;
     y *= abs(y) * 0.75;
-    z *= 1.6;
+    z *= abs(z) * 0.8;
   }
 
   if (abs(x) > 0.1 || abs(y) > 0.1 || abs(z) > 0.1)
