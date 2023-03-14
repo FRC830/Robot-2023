@@ -222,12 +222,25 @@ void Robot::TeleopInit() noexcept {
  * This function is called periodically during operator control.
  */
 void Robot::TeleopPeriodic() noexcept {
-    if (m_Copilot.GetRightTriggerAxis() > 0.4)
+  if (m_Copilot.GetRightTriggerAxis() > 0.4)
+  {
+      m_subsystems.SetGrabberWheels(true);
+  }
+  else if (m_Copilot.GetLeftTriggerAxis() > 0.4)
+  {
+    m_subsystems.SetGrabberWheels(false);
+  }
+  else 
+  {
+    m_subsystems.DisableGrabberWheels();
+  }
+
+  if (m_Copilot.GetLeftY() > 0.4)
   {
     frc::SmartDashboard::PutNumber("arm", 400);
     m_subsystems.RotateArm(true);
   }
-  else if (m_Copilot.GetLeftTriggerAxis() > 0.4)
+  else if (m_Copilot.GetLeftY() < -0.4)
   {
     frc::SmartDashboard::PutNumber("arm", 300);
     m_subsystems.RotateArm(false);
@@ -249,15 +262,18 @@ void Robot::TeleopPeriodic() noexcept {
 
   if (m_Copilot.GetXButton())
   {
-    m_subsystems.SetGrabberWheels(true);
+    m_subsystems.SetArmPIDTarget(0);
+    m_subsystems.SetTelePIDTarget(0);
   }
   else if (m_Copilot.GetYButton())
   {
-    m_subsystems.SetGrabberWheels(false);
+    m_subsystems.SetArmPIDTarget(0);
+    m_subsystems.SetTelePIDTarget(0);
   }
-  else if (!(m_Copilot.GetXButton() || m_Copilot.GetYButton()))
+  else if (m_Copilot.GetYButton())
   {
-    m_subsystems.DisableGrabberWheels();
+    m_subsystems.SetArmPIDTarget(0);
+    m_subsystems.SetTelePIDTarget(0);
   }
 
   frc::SmartDashboard::PutNumber("co RightY", m_Copilot.GetRightY());
