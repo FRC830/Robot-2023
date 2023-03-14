@@ -313,19 +313,22 @@ void Robot::TestExit() noexcept {}
 
 void Robot::ConfigureButtonBindings() noexcept
 {
-  frc2::JoystickButton(&m_Pilot, frc::XboxController::Button::kA).WhenPressed(frc2::InstantCommand([&]() -> void
-                                                                                                  { m_slow = !m_slow; },
-                                                                                                  {}));
-  frc2::JoystickButton(&m_Copilot, frc::XboxController::Button::kB).WhenPressed(frc2::InstantCommand([&]() -> void
-                                                                                                  { m_subsystems.ToggleGrabberPnumatics(); },
-                                                                                                  {&m_subsystems}));
 
   frc2::JoystickButton(&m_Pilot, frc::XboxController::Button::kStart).WhenPressed(frc2::InstantCommand([&]() -> void
-                                                                                                  { m_driveSubsystem.ZeroHeading(); m_fieldOriented = true; },
+                                                                                                 { m_driveSubsystem.ZeroHeading(); m_fieldOriented = true; },
+                                                                                                 {}));
+  frc2::JoystickButton(&m_Pilot, frc::XboxController::Button::kA).WhenPressed(frc2::InstantCommand([&]() -> void
+                                                                                                  { m_slow = !m_slow; },
                                                                                                   {}));
   frc2::JoystickButton(&m_Pilot, frc::XboxController::Button::kBack).WhenPressed(frc2::InstantCommand([&]() -> void
                                                                                                   {  m_fieldOriented = false; },
                                                                                                   {}));
+
+
+
+  frc2::JoystickButton(&m_Copilot, frc::XboxController::Button::kB).WhenPressed(frc2::InstantCommand([&]() -> void
+                                                                                                  { m_subsystems.ToggleGrabberPnumatics(); },
+                                                                                                  {&m_subsystems}));
   frc2::JoystickButton(&m_Copilot, frc::XboxController::Button::kX).WhenPressed(frc2::InstantCommand([&]() -> void
                                                                     
                                                                                                   { m_subsystems.SetGrabberWheels(true); },
@@ -334,13 +337,10 @@ void Robot::ConfigureButtonBindings() noexcept
                                                                     
                                                                                                   {  m_subsystems.SetGrabberWheels(false); },
                                                                                                   {&m_subsystems}));
-
   frc2::JoystickButton(&m_Copilot, frc::XboxController::Button::kLeftBumper).WhenPressed(frc2::InstantCommand([&]() -> void
-                                                                    
                                                                                                   { m_subsystems.moveTelescopethingy(false); },
                                                                                                   {&m_subsystems}));
   frc2::JoystickButton(&m_Copilot, frc::XboxController::Button::kRightBumper).WhenPressed(frc2::InstantCommand([&]() -> void
-                                                                    
                                                                                                   { m_subsystems.moveTelescopethingy(true); },
                                                                                                   {&m_subsystems}));
   
