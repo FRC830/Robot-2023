@@ -314,24 +314,23 @@ void Robot::ConfigureButtonBindings() noexcept
 {
 
   frc2::Trigger([&]()->bool {return m_Pilot.GetAButtonPressed();}).OnTrue(m_subsystems.RunOnce([&]() -> void
-                                                                                                  { m_slow = !m_slow; }));
+                                                                                                  {m_slow = !m_slow; }));
 
 
   frc2::Trigger([&]()->bool {return m_Pilot.GetStartButton();}).OnTrue(m_driveSubsystem.RunOnce([&]() -> void
-                                                                                                  { m_driveSubsystem.ZeroHeading(); m_fieldOriented = true; }));
+                                                                                                  {m_driveSubsystem.ZeroHeading(); m_fieldOriented = true; }));
   frc2::Trigger([&]()->bool {return m_Pilot.GetBackButton();}).OnTrue(m_subsystems.RunOnce([&]() -> void
-                                                                                                  {  m_fieldOriented = false; }));
+                                                                                                  {m_fieldOriented = false; }));
 
 
   frc2::Trigger([&]()->bool {return m_Pilot.GetBButtonPressed();}).OnTrue(m_subsystems.RunOnce([&]() -> void
-                                                                                                  { m_subsystems.ToggleGrabberPnumatics(); }));
-
+                                                                                                  {m_subsystems.ToggleGrabberPnumatics(); }));
   frc2::Trigger([&]()->bool {return m_Pilot.GetXButtonPressed();}).OnTrue(m_subsystems.RunOnce([&]() -> void
-                                                                                                  { m_subsystems.SetGrabberWheels(true); }));
+                                                                                                  {m_subsystems.SetGrabberWheels(true); }));
   frc2::Trigger([&]()->bool {return m_Pilot.GetYButtonPressed();}).OnTrue(m_subsystems.RunOnce([&]() -> void
-                                                                                                  {  m_subsystems.SetGrabberWheels(false); }));
+                                                                                                  {m_subsystems.SetGrabberWheels(false); }));
   frc2::Trigger([&]()->bool {return m_Pilot.GetLeftBumperPressed();}).OnTrue(m_subsystems.RunOnce([&]() -> void
-                                                                                                  { m_subsystems.moveTelescopethingy(false); }));
+                                                                                                  {m_subsystems.moveTelescopethingy(false); }));
   frc2::Trigger([&]()->bool {return m_Pilot.GetRightBumperPressed();}).OnTrue(m_subsystems.RunOnce([&]() -> void
                                                                                                   {m_subsystems.moveTelescopethingy(true); }));
   
