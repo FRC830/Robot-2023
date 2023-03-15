@@ -88,5 +88,8 @@
     "typeindex": "cpp",
     "typeinfo": "cpp",
     "variant": "cpp"
-  }
+  },
+  "java.project.sourcePaths": [
+    "build"
+  ]
 }
