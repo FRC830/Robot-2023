@@ -5,6 +5,7 @@
 #pragma once
 
 #include "subsystems/SwerveModule.h"
+#include "subsystems/SwerveModuleTwo.h"
 
 #include "Constants.h"
 
@@ -186,7 +187,11 @@ public:
     
   // Four swerve modules.
   std::unique_ptr<SwerveModule> m_frontLeftSwerveModule;
-  std::unique_ptr<SwerveModule> m_frontRightSwerveModule;
+
+
+  std::unique_ptr<SwerveModuleTwo> m_frontRightSwerveModule;
+
+
   std::unique_ptr<SwerveModule> m_rearLeftSwerveModule;
   std::unique_ptr<SwerveModule> m_rearRightSwerveModule;
 

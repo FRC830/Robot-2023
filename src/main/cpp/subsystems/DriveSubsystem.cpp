@@ -1,5 +1,8 @@
 
 #include "subsystems/SwerveModule.h"
+
+#include "subsystems/SwerveModuleTwo.h"
+
 #include "subsystems/DriveSubsystem.h"
 
 #include <frc/smartdashboard/SmartDashboard.h>
