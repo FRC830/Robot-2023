@@ -22,7 +22,8 @@ void Subsystems::SubsystemsInit()
 
   
 
-TelePIDController.SetSetpoint(-20);
+TelePIDController.SetSetpoint(TeleMotorEncoder.GetPosition());
+ArmPIDController.SetSetpoint(GetArmEncoderAngle());
 
   frc::SmartDashboard::PutBoolean("Set this to True if Set Tele PID Target", false);
   frc::SmartDashboard::PutBoolean("Set this to True if Set Arm PID Target", false);

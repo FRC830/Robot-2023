@@ -106,7 +106,7 @@ void Robot::RobotInit() noexcept
   //autonChooser.addOption("taxi", 0);
 
   
-  m_subsystems.SubsystemsInit();
+  
 
 }
 
@@ -167,7 +167,6 @@ void Robot::RobotPeriodic() noexcept
 
   eventLoop.Poll();
 
-  m_subsystems.SubsystemsPeriodic();
   //m_subsystems.SetArmPIDF(frc::SmartDashboard::PutNumber("ArmP", pidf::kArmP), frc::SmartDashboard::PutNumber("ArmI", pidf::kArmI), frc::SmartDashboard::PutNumber("ArmD", pidf::kArmD));
 }
 
@@ -216,6 +215,8 @@ void Robot::TeleopInit() noexcept {
   m_driveSubsystem.ResetEncoders();
 
   m_driveSubsystem.SetDefaultCommand(*m_driveCommand);
+
+  m_subsystems.SubsystemsInit();
 }
 
 /**
@@ -295,6 +296,9 @@ void Robot::TeleopPeriodic() noexcept {
   {
     turbo = false;
   }
+
+  
+  m_subsystems.SubsystemsPeriodic();
 }
 
 void Robot::TeleopExit() noexcept {}

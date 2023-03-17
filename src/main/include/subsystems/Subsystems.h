@@ -34,8 +34,8 @@ class Subsystems : public frc2::SubsystemBase
         double GrabberWheelSpeeds = 1.0;
 
         double ArmSpeed = 0.75;
-        int MinArmAngle = -62;
-        int MaxArmAngle = 100;
+        int MinArmAngle = -60;
+        int MaxArmAngle = 62;
         int ArmAngleBufferSize = 20;
 
         double TeleSpeed = 0.30;
