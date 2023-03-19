@@ -1,16 +1,21 @@
 #include "Constants.h"
 
-int physical::kFrontLeftAlignmentOffset = 316;
-int physical::kFrontRightAlignmentOffset = 157;
+int physical::kFrontLeftAlignmentOffset = 322;
+int physical::kFrontRightAlignmentOffset = 152;
 int physical::kRearLeftAlignmentOffset = 60;
-int physical::kRearRightAlignmentOffset = 287;
+int physical::kRearRightAlignmentOffset = 284;
 
-double pidf::kArmP = 0.001;
-double pidf::kArmI = 0.0;
+// int physical::kFrontLeftAlignmentOffset = 316;
+// int physical::kFrontRightAlignmentOffset = 162;
+// int physical::kRearLeftAlignmentOffset = 62;
+// int physical::kRearRightAlignmentOffset = 291;
+
+double pidf::kArmP = 0.025;
+double pidf::kArmI = 0.0032;
 double pidf::kArmD = 0.0;
 double pidf::kArmF = 0.0;
 
 double pidf::kTeleP = 0.1;
-double pidf::kTeleI = 0.0;
+double pidf::kTeleI = 0.005;
 double pidf::kTeleD = 0.0;
 double pidf::kTeleF = 0.0;

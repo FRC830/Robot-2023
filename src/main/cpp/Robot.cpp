@@ -104,7 +104,7 @@ void Robot::RobotInit() noexcept
   //autonChooser.addOption("taxi", 0);
 
   
-  m_subsystems.SubsystemsInit();
+  
 
 }
 
@@ -127,6 +127,8 @@ void Robot::GetDashBoardValues() {
   c3 = frc::SmartDashboard::GetNumber("Counter Limit 3", c3);
   c4 = frc::SmartDashboard::GetNumber("Counter Limit 4", c4);
   c5 = frc::SmartDashboard::GetNumber("Counter Limit 5", c5);
+
+  frc::SmartDashboard::PutNumber("co RightY", m_Copilot.GetRightY());
   
   m_auton.deadzoneAngle = frc::SmartDashboard::GetNumber("Auton Deadzone Angle", m_auton.deadzoneAngle);
   m_auton.balanceSpeed = frc::SmartDashboard::GetNumber("Auton Balance Speed", m_auton.balanceSpeed);
@@ -192,7 +194,6 @@ void Robot::RobotPeriodic() noexcept
 
   eventLoop.Poll();
 
-  m_subsystems.SubsystemsPeriodic();
   //m_subsystems.SetArmPIDF(frc::SmartDashboard::PutNumber("ArmP", pidf::kArmP), frc::SmartDashboard::PutNumber("ArmI", pidf::kArmI), frc::SmartDashboard::PutNumber("ArmD", pidf::kArmD));
 }
 
@@ -214,7 +215,7 @@ void Robot::AutonomousInit() noexcept
   
   counter = 0;
 
-  //m_driveSubsystem.SetDefaultCommand(*m_driveCommand);
+  ////m_driveSubsystem.SetDefaultCommand(*m_driveCommand);
 }
 
 void Robot::AutonomousPeriodic() noexcept {
@@ -265,38 +266,95 @@ void Robot::TeleopInit() noexcept {
   m_driveSubsystem.ResetEncoders();
 
   m_driveSubsystem.SetDefaultCommand(*m_driveCommand);
+
+  m_subsystems.SubsystemsInit();
 }
 
 /**
  * This function is called periodically during operator control.
  */
 void Robot::TeleopPeriodic() noexcept {
-    if (m_Copilot.GetRightTriggerAxis() > 0.4)
+
+  if (m_xbox.GetXButton())
   {
-    frc::SmartDashboard::PutNumber("arm", 400);
-    std::cout << "arm up" << std::endl;
-    m_subsystems.RotateArm(true);
+    m_driveSubsystem.Align();
+  }
+  if (m_Copilot.GetRightTriggerAxis() > 0.4)
+  {
+      m_subsystems.SetGrabberWheels(true);
   }
   else if (m_Copilot.GetLeftTriggerAxis() > 0.4)
   {
+    m_subsystems.SetGrabberWheels(false);
+  }
+  else 
+  {
+    m_subsystems.DisableGrabberWheels();
+  }
+
+  if (m_Copilot.GetLeftY() > 0.4)
+  {
+    frc::SmartDashboard::PutNumber("arm", 400);
+    m_subsystems.RotateArm(true);
+  }
+  else if (m_Copilot.GetLeftY() < -0.4)
+  {
     frc::SmartDashboard::PutNumber("arm", 300);
-    std::cout << "arm down" << std::endl;
     m_subsystems.RotateArm(false);
   }
 
-  //m_Pilot.LeftTrigger(0.4, &eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(false);});
+  //m_Copilot.LeftTrigger(0.4, &eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(false);});
 
-  // m_Pilot.POVUp(&eventLoop).IfHigh([&]() -> void  {m_lock = true;});
-  // m_Pilot.POVDown(&eventLoop).IfHigh([&]() -> void  {m_lock = false;});
+  // m_Copilot.POVUp(&eventLoop).IfHigh([&]() -> void  {m_lock = true;});
+  // m_Copilot.POVDown(&eventLoop).IfHigh([&]() -> void  {m_lock = false;});
 
-  if (m_Pilot.GetPOV() > 0 && m_Pilot.GetPOV() < 180)
+  if (m_Copilot.GetPOV() > 0 && m_Copilot.GetPOV() < 180)
   {
     m_lock = true;
   }
-  else if (m_Pilot.GetPOV() > 180 && m_Pilot.GetPOV() < 360)
+  else if (m_Copilot.GetPOV() > 180 && m_Copilot.GetPOV() < 360)
   {
     m_lock = false;
   }
+
+  if (m_Copilot.GetXButton())
+  {
+    m_subsystems.SetArmPIDTarget(7);
+    //m_subsystems.SetTelePIDTarget(0);
+  }
+  else if (m_Copilot.GetYButton())
+  {
+    m_subsystems.SetArmPIDTarget(0);
+    //m_subsystems.SetTelePIDTarget(0);
+  }
+  else if (m_Copilot.GetAButton())
+  {
+    m_subsystems.SetArmPIDTarget(0);
+    //m_subsystems.SetTelePIDTarget(0);
+  }
+
+  frc::SmartDashboard::PutNumber("co RightY", m_Copilot.GetRightY());
+
+  if (m_Copilot.GetRightY() > 0.15)
+  {
+    m_subsystems.moveTelescopethingy(true);
+  }
+  else if (m_Copilot.GetRightY() < -0.15)
+  {
+    m_subsystems.moveTelescopethingy(false);
+  }
+
+  if (m_xbox.GetLeftTriggerAxis() > 0.1)
+  {
+    turbo = true;
+  }
+  else 
+  {
+    turbo = false;
+  }
+
+  
+  m_subsystems.SubsystemsPeriodic();
 }
 
 void Robot::TeleopExit() noexcept {}
@@ -324,31 +382,26 @@ void Robot::ConfigureButtonBindings() noexcept
   frc2::JoystickButton(&m_Pilot, frc::XboxController::Button::kA).WhenPressed(frc2::InstantCommand([&]() -> void
                                                                                                   { m_slow = !m_slow; },
                                                                                                   {}));
-  frc2::JoystickButton(&m_Pilot, frc::XboxController::Button::kBack).WhenPressed(frc2::InstantCommand([&]() -> void
+  frc2::JoystickButton(&m_Copilot, frc::XboxController::Button::kB).WhenPressed(frc2::InstantCommand([&]() -> void
+                                                                                                  { m_subsystems.ToggleGrabberPnumatics(); std::cout << "pnumatics toggled" << std::endl;},
+                                                                                                  {&m_subsystems}));
+
+  frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kStart).WhenPressed(frc2::InstantCommand([&]() -> void
+                                                                                                  { m_driveSubsystem.ZeroHeading(); m_fieldOriented = true; },
+                                                                                                  {}));
+  frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kBack).WhenPressed(frc2::InstantCommand([&]() -> void
                                                                                                   {  m_fieldOriented = false; },
                                                                                                   {}));
-
-
-
-  frc2::JoystickButton(&m_Copilot, frc::XboxController::Button::kB).WhenPressed(frc2::InstantCommand([&]() -> void
-                                                                                                  { m_subsystems.ToggleGrabberPnumatics(); },
-                                                                                                  {&m_subsystems}));
-  frc2::JoystickButton(&m_Copilot, frc::XboxController::Button::kX).WhenPressed(frc2::InstantCommand([&]() -> void
+  frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kX).WhenPressed(frc2::InstantCommand([&]() -> void
                                                                     
-                                                                                                  { m_subsystems.SetGrabberWheels(true); },
-                                                                                                  {&m_subsystems}));
-  frc2::JoystickButton(&m_Copilot, frc::XboxController::Button::kY).WhenPressed(frc2::InstantCommand([&]() -> void
-                                                                    
-                                                                                                  {  m_subsystems.SetGrabberWheels(false); },
-                                                                                                  {&m_subsystems}));
-  frc2::JoystickButton(&m_Copilot, frc::XboxController::Button::kLeftBumper).WhenPressed(frc2::InstantCommand([&]() -> void
-                                                                                                  { m_subsystems.moveTelescopethingy(false); },
-                                                                                                  {&m_subsystems}));
-  frc2::JoystickButton(&m_Copilot, frc::XboxController::Button::kRightBumper).WhenPressed(frc2::InstantCommand([&]() -> void
-                                                                                                  { m_subsystems.moveTelescopethingy(true); },
-                                                                                                  {&m_subsystems}));
+  //                                                                                                 { m_subsystems.SetGrabberWheels(true); },
+  //                                                                                                 {&m_subsystems}));
+
+
+
+
   
-  //m_Pilot.RightTrigger(0.4, &eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(true);});
+  //m_xbox.RightTrigger(0.4, &eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(true);});
 
 
   //telescope 
@@ -408,17 +461,24 @@ std::tuple<double, double, double, bool> Robot::GetDriveTeleopControls() noexcep
     y *= 0.35;
     z *= 0.40;
   }
+  else if (turbo)
+  {
+    x *= 0.95;
+    y *= 0.95;
+    z *= abs(z) * 0.8;
+  }
   else
   { // XXX Still needed?
     x *= abs(x) * 0.75;
     y *= abs(y) * 0.75;
-    z *= 1.6;
+    z *= abs(z) * 0.8;
   }
 
   if (abs(x) > 0.1 || abs(y) > 0.1 || abs(z) > 0.1)
   {
     m_lock = false;
   }
+
 
   return std::make_tuple(x, y, z, m_fieldOriented);
 }

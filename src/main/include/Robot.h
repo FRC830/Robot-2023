@@ -72,8 +72,10 @@ private:
   int c4 = 425;
   int c5 = 475;
 
+
   double autonBalanceSpeed = 1;
   double autonDeadzoneAngle = 10;
+
   std::unique_ptr<frc2::RunCommand> m_driveCommand;
   std::unique_ptr<frc2::RunCommand> m_pointCommand;
   
@@ -83,4 +85,6 @@ private:
   frc::GenericHID m_buttonBoard{1};
 
   frc::SendableChooser<int> autonChooser;
+
+  bool turbo = false;
 };

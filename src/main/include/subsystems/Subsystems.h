@@ -5,6 +5,7 @@
 #include <rev/CANSparkMax.h>
 #include <frc2/command/SubsystemBase.h>
 #include <frc/AnalogEncoder.h>
+#include <frc/AnalogEncoder.h>
 #include "../Constants.h"
 
 
@@ -23,6 +24,7 @@ class Subsystems : public frc2::SubsystemBase
         void moveTelescopethingy(bool direction);
         void StopTelescope();
         
+        void DisableGrabberWheels();
         void SetArmPIDF (double p, double i, double d);
         void SetArmPIDTarget (int target);
         void SetTelePIDF (double p, double i, double d);
@@ -32,17 +34,21 @@ class Subsystems : public frc2::SubsystemBase
         void SubsystemsPeriodic ();
     private:
         //Constants
-        double GrabberWheelSpeeds = 0.5;
+        double GrabberWheelSpeeds = 1.0;
 
-        double ArmSpeed = 0.01;
-        int MinArmAngle = -400;
-        int MaxArmAngle = 5000;
+        double ArmSpeed = 1.35;
+
+        int MinArmAngle = -60;
+        int MaxArmAngle = 62;
         int ArmAngleBufferSize = 20;
 
-        double TeleSpeed = 1;
-        int MinTeleAngle = 10;
-        int MaxTeleAngle = 250;
-        int TeleAngleBufferSize = 20;   
+        double TeleSpeed = 0.30;
+        int MinTeleAngle = -55000000;
+        int MaxTeleAngle = 10000000;
+        int TeleAngleBufferSize = 2; 
+
+        bool teleZeroed = false;
+  
         
         //Status Variables
         bool GrabberOnOff = false;
@@ -62,6 +68,7 @@ class Subsystems : public frc2::SubsystemBase
 
         rev::CANSparkMax teleMotor = rev::CANSparkMax(12, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
         rev::SparkMaxRelativeEncoder TeleMotorEncoder = teleMotor.GetEncoder();
+
         
 
   int GetArmEncoderAngle();

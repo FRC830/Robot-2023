@@ -2092,7 +2092,7 @@ std::string SparkMax::ApplyConfig(const std::string_view key, const ConfigValue 
         }
         break;
     case 51:
-        name = "CompensatedNominalVoltage";
+        name = "CompensatedNominalVoltage"; 
         if (pdouble)
         {
             if (*pdouble == 0.0)

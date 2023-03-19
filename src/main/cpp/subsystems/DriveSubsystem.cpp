@@ -76,7 +76,7 @@ DriveSubsystem::DriveSubsystem() noexcept
           pidf::kDriveThetaMaxVelocity,
           pidf::kDriveThetaMaxAcceleration}));
 
-  m_orientationController->EnableContinuousInput(0.0_deg, +360.0_deg);
+  m_orientationController->EnableContinuousInput(-180.0_deg, +180.0_deg);
 
   // This is precomputed and used in cases where there is close to a 180 degree
   // error; needed to get things moving in some cases (rotate 180 degrees).
@@ -152,6 +152,8 @@ std::array<frc::SwerveModulePosition, 4> DriveSubsystem::GetModulePositions() no
 
 void DriveSubsystem::Periodic() noexcept
 {
+
+
   m_frontLeftSwerveModule->Periodic();
   m_frontRightSwerveModule->Periodic();
   m_rearLeftSwerveModule->Periodic();
@@ -178,6 +180,12 @@ void DriveSubsystem::Periodic() noexcept
   // needs special handling, using precomputed theta.
   double theta = m_orientationController->Calculate(-botRot.Degrees());
   units::angle::degree_t error = m_orientationController->GetPositionError();
+
+  if (firstTimeI)
+  {
+    startingAngle = botRot.Degrees();
+    firstTimeI = false;
+  }
 
 
   frc::SmartDashboard::PutNumber("turning error", (double)error);
@@ -455,7 +463,7 @@ void DriveSubsystem::Drive(units::meters_per_second_t xSpeed,
  
   wpi::array<frc::SwerveModuleState, 4> states = kDriveKinematics.ToSwerveModuleStates(
       fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
-                          xSpeed, ySpeed, rot + (physical::kMaxTurnRate* (int)m_theta) * (3.14/180), botRot)
+                          xSpeed, ySpeed, rot, botRot)
                     : frc::ChassisSpeeds{xSpeed, ySpeed, rot},
       frc::Translation2d(x_center, y_center));
 
@@ -463,7 +471,7 @@ void DriveSubsystem::Drive(units::meters_per_second_t xSpeed,
 
   kDriveKinematics.DesaturateWheelSpeeds(&states, physical::kMaxDriveSpeed);
 
-  m_orientationController->SetGoal(targetRot.Degrees());
+  //m_orientationController->SetGoal(targetRot.Degrees());
   
   SetModuleStates(states);
 
@@ -607,9 +615,9 @@ void DriveSubsystem::ThetaPID(double P, double I, double D, double F, double V, 
   m_thetaF = F;
 
   m_orientationController->SetPID(P, I, D);
-  m_orientationController->SetConstraints(std::move(frc::TrapezoidProfile<units::angle::degrees>::Constraints{
-      units::angular_velocity::degrees_per_second_t{V},
-      units::angular_acceleration::degrees_per_second_squared_t{A}}));
+  //m_orientationController->SetConstraints(std::move(frc::TrapezoidProfile<units::angle::degrees>::Constraints{
+  //    units::angular_velocity::degrees_per_second_t{V},
+  //    units::angular_acceleration::degrees_per_second_squared_t{A}}));
 }
 
 void DriveSubsystem::BurnConfig() noexcept
@@ -626,4 +634,9 @@ void DriveSubsystem::ClearFaults() noexcept
   m_frontRightSwerveModule->ClearFaults();
   m_rearLeftSwerveModule->ClearFaults();
   m_rearRightSwerveModule->ClearFaults();
+}
+
+void DriveSubsystem::Align() noexcept
+{
+  SetTurnToAngle(startingAngle);
 }
