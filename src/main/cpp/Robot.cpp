@@ -224,7 +224,7 @@ void Robot::TeleopInit() noexcept {
  */
 void Robot::TeleopPeriodic() noexcept {
 
-  if (m_xbox.GetXButton())
+  if (m_Pilot.GetXButton())
   {
     m_driveSubsystem.Align();
   }
@@ -293,7 +293,7 @@ void Robot::TeleopPeriodic() noexcept {
     m_subsystems.moveTelescopethingy(false);
   }
 
-  if (m_xbox.GetLeftTriggerAxis() > 0.1)
+  if (m_Pilot.GetLeftTriggerAxis() > 0.1)
   {
     turbo = true;
   }
@@ -324,20 +324,20 @@ void Robot::TestExit() noexcept {}
 
 void Robot::ConfigureButtonBindings() noexcept
 {
-  frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kA).WhenPressed(frc2::InstantCommand([&]() -> void
+  frc2::JoystickButton(&m_Pilot, frc::XboxController::Button::kA).WhenPressed(frc2::InstantCommand([&]() -> void
                                                                                                   { m_slow = !m_slow; },
                                                                                                   {}));
   frc2::JoystickButton(&m_Copilot, frc::XboxController::Button::kB).WhenPressed(frc2::InstantCommand([&]() -> void
                                                                                                   { m_subsystems.ToggleGrabberPnumatics(); std::cout << "pnumatics toggled" << std::endl;},
                                                                                                   {&m_subsystems}));
 
-  frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kStart).WhenPressed(frc2::InstantCommand([&]() -> void
+  frc2::JoystickButton(&m_Pilot, frc::XboxController::Button::kStart).WhenPressed(frc2::InstantCommand([&]() -> void
                                                                                                   { m_driveSubsystem.ZeroHeading(); m_fieldOriented = true; },
                                                                                                   {}));
-  frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kBack).WhenPressed(frc2::InstantCommand([&]() -> void
+  frc2::JoystickButton(&m_Pilot, frc::XboxController::Button::kBack).WhenPressed(frc2::InstantCommand([&]() -> void
                                                                                                   {  m_fieldOriented = false; },
                                                                                                   {}));
-  // frc2::JoystickButton(&m_xbox, frc::XboxController::Button::kX).WhenPressed(frc2::InstantCommand([&]() -> void
+  // frc2::JoystickButton(&m_Pilot, frc::XboxController::Button::kX).WhenPressed(frc2::InstantCommand([&]() -> void
                                                                     
   //                                                                                                 { m_subsystems.SetGrabberWheels(true); },
   //                                                                                                 {&m_subsystems}));
@@ -346,18 +346,18 @@ void Robot::ConfigureButtonBindings() noexcept
 
 
   
-  //m_xbox.RightTrigger(0.4, &eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(true);});
+  //m_Pilot.RightTrigger(0.4, &eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(true);});
 
 
   //telescope 
 
-  // m_xbox.LeftBumper(&eventLoop).IfHigh([&]() -> void  {m_subsystems.moveTelescopethingy(true);});
-  // m_xbox.RightBumper(&eventLoop).IfHigh([&]() -> void  {m_subsystems.moveTelescopethingy(false);});
+  // m_Pilot.LeftBumper(&eventLoop).IfHigh([&]() -> void  {m_subsystems.moveTelescopethingy(true);});
+  // m_Pilot.RightBumper(&eventLoop).IfHigh([&]() -> void  {m_subsystems.moveTelescopethingy(false);});
 
 
 
-  // m_xbox.POVLeft(&eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(false);});
-  // m_xbox.POVRight(&eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(false);});
+  // m_Pilot.POVLeft(&eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(false);});
+  // m_Pilot.POVRight(&eventLoop).IfHigh([&]() -> void  {m_subsystems.RotateArm(false);});
 
 
  }
@@ -366,9 +366,9 @@ void Robot::ConfigureButtonBindings() noexcept
 
 std::tuple<double, double, double, bool> Robot::GetDriveTeleopControls() noexcept
 {
-  double x = -m_xbox.GetLeftY();
-  double y = -m_xbox.GetLeftX();
-  double z = -m_xbox.GetRightX();
+  double x = -m_Pilot.GetLeftY();
+  double y = -m_Pilot.GetLeftX();
+  double z = -m_Pilot.GetRightX();
 
   // between out = in^3.0 and out = in.
   auto shape = [](double raw, double mixer = 0.75) -> double
