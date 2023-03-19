@@ -1,3 +1,5 @@
+#pragma once
+
 #include <frc/Solenoid.h>
 #include <frc/controller/PIDController.h>
 #include <rev/CANSparkMax.h>

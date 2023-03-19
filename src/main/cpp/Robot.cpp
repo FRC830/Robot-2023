@@ -128,8 +128,8 @@ void Robot::GetDashBoardValues() {
   c4 = frc::SmartDashboard::GetNumber("Counter Limit 4", c4);
   c5 = frc::SmartDashboard::GetNumber("Counter Limit 5", c5);
   
-  m_auton.deadzoneAngle = frc::SmartDashboard::GetNumber("Auton Deadzone Angle", autonDeadzoneAngle);
-  m_auton.balanceSpeed = frc::SmartDashboard::GetNumber("Auton Balance Speed", autonBalanceSpeed);
+  m_auton.deadzoneAngle = frc::SmartDashboard::GetNumber("Auton Deadzone Angle", m_auton.deadzoneAngle);
+  m_auton.balanceSpeed = frc::SmartDashboard::GetNumber("Auton Balance Speed", m_auton.balanceSpeed);
 
 }
 
@@ -156,8 +156,8 @@ void Robot::PutDashBoardValues(){
   frc::SmartDashboard::PutNumber("Counter Limit 4", c4);
   frc::SmartDashboard::PutNumber("Counter Limit 5", c5);
 
-  frc::SmartDashboard::PutNumber("Auton Deadzone Angle", autonDeadzoneAngle);
-  frc::SmartDashboard::PutNumber("Auton Balance Speed", autonBalanceSpeed);
+  frc::SmartDashboard::PutNumber("Auton Deadzone Angle", m_auton.deadzoneAngle);
+  frc::SmartDashboard::PutNumber("Auton Balance Speed", m_auton.balanceSpeed);
 }
 
 void Robot::RobotPeriodic() noexcept

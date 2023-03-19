@@ -6,9 +6,9 @@
 class Auton 
 {
     public: 
-        void runAuton (int mode, DriveSubsystem& m_drive, Subsystems m_subsystems, int counter);
-        double autonDeadzoneAngle {10};
-        double autonBalanceSpeed {1};
+        void runAuton (int mode, DriveSubsystem& m_drive, Subsystems& m_subsystems, int counter);
+        double deadzoneAngle {10};
+        double balanceSpeed {1};
 
         frc::BuiltInAccelerometer mAccel{};
     

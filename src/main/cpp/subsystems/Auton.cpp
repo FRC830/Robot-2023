@@ -87,6 +87,16 @@ void Auton::DockingLeft(DriveSubsystem& m_driveSubsystem, int counter)
     }
 }
 
+
+void Auton::ScorePieceTop(Subsystems& m_subsystems, DriveSubsystem& m_drive, int counter) {
+
+    
+
+}
+
+
+//util stuff
+
 double Auton::getPitchForBalance()
 {
     return std::atan2((- mAccel.GetX()) , std::sqrt(mAccel.GetY() * mAccel.GetY() + mAccel.GetZ() * mAccel.GetZ())) * 57.3; // pitch angle
@@ -102,11 +112,11 @@ void Auton::BalanceOnStation(DriveSubsystem& m_drive)
     double pitchAngle = getPitchForBalance();
     double rollAngle = getRollForBalance();
 
-    if (pitchAngle < -autonDeadzoneAngle)
+    if (pitchAngle < -deadzoneAngle)
     {
-        m_drive.Drive((units::velocity::meters_per_second_t)autonBalanceSpeed, 0_mps, 0_deg_per_s, false);
-    } else if (pitchAngle > autonDeadzoneAngle)
+        m_drive.Drive((units::velocity::meters_per_second_t)balanceSpeed, 0_mps, 0_deg_per_s, false);
+    } else if (pitchAngle > deadzoneAngle)
     {
-        m_drive.Drive(-(units::velocity::meters_per_second_t)autonBalanceSpeed, 0_mps, 0_deg_per_s, false);
+        m_drive.Drive(-(units::velocity::meters_per_second_t)balanceSpeed, 0_mps, 0_deg_per_s, false);
     }
 }
