@@ -30,6 +30,8 @@ ArmPIDController.SetSetpoint(GetArmEncoderAngle());
 
   frc::SmartDashboard::PutNumber("Arm PID target to Set to for manual setting", 0);
   frc::SmartDashboard::PutNumber("Tele PID target to Set to for manual setting", 0);
+
+  teleZeroed = false;
     
 }
 
@@ -193,3 +195,4 @@ int Subsystems::GetArmEncoderAngle()
 {
     return (ArmMotorEncoder.GetAbsolutePosition() - 0.16)*(90/0.065);
 }
+    

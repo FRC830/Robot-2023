@@ -33,7 +33,8 @@ class Subsystems : public frc2::SubsystemBase
         //Constants
         double GrabberWheelSpeeds = 1.0;
 
-        double ArmSpeed = 0.75;
+        double ArmSpeed = 1.35;
+
         int MinArmAngle = -60;
         int MaxArmAngle = 62;
         int ArmAngleBufferSize = 20;
@@ -41,7 +42,10 @@ class Subsystems : public frc2::SubsystemBase
         double TeleSpeed = 0.30;
         int MinTeleAngle = -55000000;
         int MaxTeleAngle = 10000000;
-        int TeleAngleBufferSize = 2;   
+        int TeleAngleBufferSize = 2; 
+
+        bool teleZeroed = false;
+  
         
         //Status Variables
         bool GrabberOnOff = false;

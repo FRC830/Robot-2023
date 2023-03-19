@@ -70,7 +70,8 @@ public:
   // Test or simple autonomous (no motion planning) oriented methods;
   // note that these return false until the requested action has completed.
   void ResetDrive() noexcept;                                              // Zero drive distance
-  void SetDriveBrakeMode(bool brake) noexcept;                             // Brake or coast
+  void SetDriveBrakeMode(bool brake) noexcept;// Brake or coast
+  void Align() noexcept;                       
   bool ZeroModules() noexcept;                                             // Face forward
   bool SetTurnInPlace() noexcept;                                          // Orient modules for spin in-place
   bool SetLockWheelsX() noexcept;                                          // Orient modules for staying ("X")
@@ -123,6 +124,10 @@ public:
    * @return the robot's heading in degrees, from -180 to 180
    */
   units::degree_t GetHeading() noexcept;
+
+  units::degree_t startingAngle;
+
+  bool firstTimeI = false;
 
   /**
    * Zeroes the heading of the robot.

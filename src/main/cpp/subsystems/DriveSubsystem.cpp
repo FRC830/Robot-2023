@@ -152,6 +152,8 @@ std::array<frc::SwerveModulePosition, 4> DriveSubsystem::GetModulePositions() no
 
 void DriveSubsystem::Periodic() noexcept
 {
+
+
   m_frontLeftSwerveModule->Periodic();
   m_frontRightSwerveModule->Periodic();
   m_rearLeftSwerveModule->Periodic();
@@ -178,6 +180,12 @@ void DriveSubsystem::Periodic() noexcept
   // needs special handling, using precomputed theta.
   double theta = m_orientationController->Calculate(-botRot.Degrees());
   units::angle::degree_t error = m_orientationController->GetPositionError();
+
+  if (firstTimeI)
+  {
+    startingAngle = botRot.Degrees();
+    firstTimeI = false;
+  }
 
 
   frc::SmartDashboard::PutNumber("turning error", (double)error);
@@ -626,4 +634,9 @@ void DriveSubsystem::ClearFaults() noexcept
   m_frontRightSwerveModule->ClearFaults();
   m_rearLeftSwerveModule->ClearFaults();
   m_rearRightSwerveModule->ClearFaults();
+}
+
+void DriveSubsystem::Align() noexcept
+{
+  SetTurnToAngle(startingAngle);
 }
