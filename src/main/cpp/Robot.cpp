@@ -122,11 +122,14 @@ void Robot::RobotInit() noexcept
 
 void Robot::GetDashBoardValues() {
 
-  c1 = frc::SmartDashboard::PutNumber("Counter Limit 1", c1);
-  c2 = frc::SmartDashboard::PutNumber("Counter Limit 2", c2);
-  c3 = frc::SmartDashboard::PutNumber("Counter Limit 3", c3);
-  c4 = frc::SmartDashboard::PutNumber("Counter Limit 4", c4);
-  c5 = frc::SmartDashboard::PutNumber("Counter Limit 5", c5);
+  c1 = frc::SmartDashboard::GetNumber("Counter Limit 1", c1);
+  c2 = frc::SmartDashboard::GetNumber("Counter Limit 2", c2);
+  c3 = frc::SmartDashboard::GetNumber("Counter Limit 3", c3);
+  c4 = frc::SmartDashboard::GetNumber("Counter Limit 4", c4);
+  c5 = frc::SmartDashboard::GetNumber("Counter Limit 5", c5);
+  
+  m_auton.deadzoneAngle = frc::SmartDashboard::GetNumber("Auton Deadzone Angle", autonDeadzoneAngle);
+  m_auton.balanceSpeed = frc::SmartDashboard::GetNumber("Auton Balance Speed", autonBalanceSpeed);
 
 }
 
@@ -152,7 +155,9 @@ void Robot::PutDashBoardValues(){
   frc::SmartDashboard::PutNumber("Counter Limit 3", c3);
   frc::SmartDashboard::PutNumber("Counter Limit 4", c4);
   frc::SmartDashboard::PutNumber("Counter Limit 5", c5);
-  
+
+  frc::SmartDashboard::PutNumber("Auton Deadzone Angle", autonDeadzoneAngle);
+  frc::SmartDashboard::PutNumber("Auton Balance Speed", autonBalanceSpeed);
 }
 
 void Robot::RobotPeriodic() noexcept
@@ -225,7 +230,7 @@ void Robot::AutonomousPeriodic() noexcept {
   //   m_driveSubsystem.Drive(4_mps, 0_mps, 0_deg_per_s, false);
     
   // } else if (counter < c2) {
-
+    
   //   m_driveSubsystem.Drive(0_mps, 0_mps, -90_deg_per_s, false);
 
   // } else if (counter < c3) {
@@ -243,8 +248,7 @@ void Robot::AutonomousPeriodic() noexcept {
   // }
   
 
-  m_auton.runAuton(1, m_driveSubsystem, counter);
-
+  m_auton.runAuton(1, m_driveSubsystem, m_subsystems, counter);
   //m_auton.runAuton(1, m_driveSubsystem, counter);
   counter += 1; 
 }

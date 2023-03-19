@@ -11,7 +11,7 @@
     "**/.classpath": true,
     "**/.project": true,
     "**/.settings": true,
-    "**/.factorypath": true,
+    "**/.factorypath": true, 
     "**/*~": true
   },
   "C_Cpp.default.configurationProvider": "vscode-wpilib",
@@ -88,5 +88,6 @@
     "typeindex": "cpp",
     "typeinfo": "cpp",
     "variant": "cpp"
-  }
+  },
+  "C_Cpp.errorSquiggles": "disabled"
 }
