@@ -5,7 +5,6 @@
 #include <rev/CANSparkMax.h>
 #include <frc2/command/SubsystemBase.h>
 #include <frc/AnalogEncoder.h>
-#include <frc/AnalogEncoder.h>
 #include "../Constants.h"
 
 

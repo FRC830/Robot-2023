@@ -109,7 +109,15 @@ double Auton::getRollForBalance()
 
 void Auton::BalanceOnStation(DriveSubsystem& m_drive)
 {
-    std::cout << "taxi auton" << std::endl;
-    // m_drive.Drive(2.133_mps, 0_mps, 0_deg_per_s, false);
-    m_drive->Drive(-0.55_mps, 0_mps, 0_deg_per_s, false);
+    double pitchAngle = getPitchForBalance();
+    double rollAngle = getRollForBalance();
+
+    if (pitchAngle < -deadzoneAngle)
+    {
+        m_drive.Drive((units::velocity::meters_per_second_t)balanceSpeed, 0_mps, 0_deg_per_s, false);
+
+    } else if (pitchAngle > deadzoneAngle)
+    {
+        m_drive.Drive(-(units::velocity::meters_per_second_t)balanceSpeed, 0_mps, 0_deg_per_s, false);
+    }
 }
