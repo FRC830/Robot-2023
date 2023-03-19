@@ -215,6 +215,8 @@ void Robot::AutonomousInit() noexcept
   
   counter = 0;
 
+  m_subsystems.SubsystemsInit();
+
   ////m_driveSubsystem.SetDefaultCommand(*m_driveCommand);
 }
 
@@ -250,6 +252,7 @@ void Robot::AutonomousPeriodic() noexcept {
   
 
   m_auton.runAuton(1, m_driveSubsystem, m_subsystems, counter);
+  m_subsystems.SubsystemsPeriodic();
   //m_auton.runAuton(1, m_driveSubsystem, counter);
   counter += 1; 
 }

@@ -10,7 +10,7 @@ void Auton::runAuton (int mode, DriveSubsystem& m_drive, Subsystems& m_subsystem
     switch (mode)
     {
         case 0:
-            taxi(m_drive, counter);
+            taxiWithLowScore(m_drive, counter);
             break;
         case 1: 
             DockingRight(m_drive, counter);
@@ -62,6 +62,8 @@ void Auton::DockingRight(DriveSubsystem& m_driveSubsystem, int counter)
     } else if (counter < 475)
     {
         m_driveSubsystem.Drive(1.5_mps, 0_mps, 0_deg_per_s, false);
+
+    } else if (counter < 725) {
         BalanceOnStation(m_driveSubsystem);
     }
 }
@@ -83,15 +85,35 @@ void Auton::DockingLeft(DriveSubsystem& m_driveSubsystem, int counter)
     } else if (counter < 475)
     {
         m_driveSubsystem.Drive(1.5_mps, 0_mps, 0_deg_per_s, false);
+
+    } else if (counter < 725) {
         BalanceOnStation(m_driveSubsystem);
     }
 }
 
 
-void Auton::ScorePieceTop(Subsystems& m_subsystems, DriveSubsystem& m_drive, int counter) {
-
-    
-
+void Auton::ScorePieceTop(Subsystems& m_subsystems, DriveSubsystem& m_driveSubsystem, int counter) {
+    if (counter < 150) {
+        m_subsystems.SetArmPIDTarget(1);
+        m_subsystems.SetTelePIDTarget(1);
+    } else if (counter < 425)
+    {
+        m_driveSubsystem.Drive(1.5_mps, 0_mps, 0_deg_per_s, false);
+    } else if (counter < 475)
+    {
+        m_driveSubsystem.Drive(0_mps, 0_mps, 90_deg_per_s, false);
+    } else if (counter < 525)
+    {
+        m_driveSubsystem.Drive(1_mps, 0_mps, 0_deg_per_s, false);
+    } else if (counter < 575)
+    {
+        m_driveSubsystem.Drive(0_mps, 0_mps, 90_deg_per_s, false);
+    } else if (counter < 625)
+    {
+        m_driveSubsystem.Drive(1.5_mps, 0_mps, 0_deg_per_s, false);
+    } else if (counter < 725) {
+        BalanceOnStation(m_driveSubsystem);
+    }
 }
 
 
