@@ -21,6 +21,10 @@
 
 #include <frc/smartdashboard/SendableChooser.h>
 
+#include <frc/DigitalInput.h>
+
+
+
 
 #include <memory>
 #include <tuple>
@@ -55,6 +59,9 @@ private:
   bool m_fieldOriented{false};
   bool m_lock{false};
   bool m_slow{false};
+
+  bool rightTriggerTrue = false;
+  bool leftTriggerTrue = false;
 
   // The robot's subsystems and commands are defined here...
   DriveSubsystem m_driveSubsystem;

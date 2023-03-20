@@ -31,7 +31,7 @@ ArmPIDController.SetSetpoint(GetArmEncoderAngle());
   frc::SmartDashboard::PutNumber("Arm PID target to Set to for manual setting", 0);
   frc::SmartDashboard::PutNumber("Tele PID target to Set to for manual setting", 0);
 
-  teleZeroed = false;
+  hasCalibratedTele = false;
     
 }
 
@@ -54,7 +54,7 @@ void Subsystems::SubsystemsPeriodic()
     //     frc::SmartDashboard::GetNumber("ArmD", pidf::kArmD)
     // );
 
-    teleMotor.Set(TelePIDController.Calculate(TeleMotorEncoder.GetPosition()));
+    
     SetTelePIDF
     (
         frc::SmartDashboard::GetNumber("TeleP", pidf::kTeleP), 
@@ -82,6 +82,28 @@ void Subsystems::SubsystemsPeriodic()
     frc::SmartDashboard::PutNumber("Tele Position", TeleMotorEncoder.GetPosition());
     frc::SmartDashboard::PutNumber("Arm PID Target", ArmPIDController.GetSetpoint());
     frc::SmartDashboard::PutNumber("Tele PID Target", TelePIDController.GetSetpoint());
+
+    if (!hasCalibratedTele)
+    {
+        if (!teleSwitch.Get())
+        {
+            hasCalibratedTele = true;
+            TeleMotorEncoder.SetPosition(0);
+            teleMotor.Set(0);
+            TelePIDController.SetSetpoint(-1);
+        }
+        else
+        {
+            teleMotor.Set(0.175);
+        }
+
+    }
+    else 
+    {
+        teleMotor.Set(TelePIDController.Calculate(TeleMotorEncoder.GetPosition()));
+    }
+
+    frc::SmartDashboard::PutBoolean("limit switch", teleSwitch.Get());
 }
 
 void Subsystems::SetGrabberWheels(bool direction)
@@ -114,6 +136,11 @@ void Subsystems::ToggleGrabberPnumatics()
 
     GrabberOnOff = !GrabberOnOff;
 
+}
+void Subsystems::SetGrabberPnumatics(bool state)
+{
+    GrabberSolenoid.Set(state);
+    GrabberOnOff = state;
 }
 void Subsystems::SetArmPIDF(double p, double i, double d)
 {

@@ -124,6 +124,7 @@ void Robot::RobotInit() noexcept
 void Robot::RobotPeriodic() noexcept
 {
 
+  frc::SmartDashboard::PutBoolean("limit switch", m_subsystems.teleSwitch.Get());
   frc::SmartDashboard::PutNumber("co RightY", m_Copilot.GetRightY());
   
   frc2::CommandScheduler::GetInstance().Run();
@@ -228,15 +229,51 @@ void Robot::TeleopPeriodic() noexcept {
   {
     m_driveSubsystem.Align();
   }
+
+
   if (m_Copilot.GetRightTriggerAxis() > 0.4)
   {
+      //pick up cone: close pnumatics, run wheels in
+      rightTriggerTrue = true;
       m_subsystems.SetGrabberWheels(true);
+      m_subsystems.SetGrabberPnumatics(true);
+
+  }
+  else if (rightTriggerTrue)
+  {
+    //release cone: open pnumatics, stop wheels
+    rightTriggerTrue = false;
+    m_subsystems.DisableGrabberWheels();
+    m_subsystems.SetGrabberPnumatics(false);
   }
   else if (m_Copilot.GetLeftTriggerAxis() > 0.4)
   {
+    //pickup cube: open pnumatics, run wheels in
+    leftTriggerTrue = true;
+    m_subsystems.SetGrabberWheels(true);
+    m_subsystems.SetGrabberPnumatics(false);
+  }
+  else if (leftTriggerTrue)
+  {
+    //reverese wheels
+    leftTriggerTrue = false;
     m_subsystems.SetGrabberWheels(false);
   }
   else 
+  {
+    m_subsystems.DisableGrabberWheels();
+  }
+
+  if (m_Copilot.GetStartButton() || m_Copilot.GetRightBumper())
+  {
+     m_subsystems.SetGrabberWheels(true);
+  }
+  else if (m_Copilot.GetBackButton() || m_Copilot.GetLeftBumper())
+  {
+    m_subsystems.SetGrabberWheels(false);
+
+  }
+  else if (!(m_Copilot.GetRightTriggerAxis() > 0.4 || m_Copilot.GetLeftTriggerAxis() > 0.4))
   {
     m_subsystems.DisableGrabberWheels();
   }
@@ -268,13 +305,13 @@ void Robot::TeleopPeriodic() noexcept {
 
   if (m_Copilot.GetXButton())
   {
-    m_subsystems.SetArmPIDTarget(7);
+    m_subsystems.SetArmPIDTarget(-14);
     //m_subsystems.SetTelePIDTarget(0);
   }
   else if (m_Copilot.GetYButton())
   {
-    m_subsystems.SetArmPIDTarget(0);
-    //m_subsystems.SetTelePIDTarget(0);
+    m_subsystems.SetArmPIDTarget(55);
+    m_subsystems.SetTelePIDTarget(-18.6);
   }
   else if (m_Copilot.GetAButton())
   {
