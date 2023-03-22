@@ -78,8 +78,11 @@ void Subsystems::SubsystemsPeriodic()
     frc::SmartDashboard::PutBoolean("Set this to True if Set Arm PID Target", false);
 
 
-    frc::SmartDashboard::PutNumber("Arm Position", GetArmEncoderAngle());
     frc::SmartDashboard::PutNumber("Tele Position", TeleMotorEncoder.GetPosition());
+    frc::SmartDashboard::PutNumber("Arm Position", GetArmEncoderAngle());
+    frc::SmartDashboard::PutNumber("Arm Position5", ArmMotorEncoder5.GetAbsolutePosition());
+    //frc::SmartDashboard::PutNumber("Arm Position6", ArmMotorEncoder6.GetAbsolutePosition());
+    frc::SmartDashboard::PutNumber("Arm Position7", ArmMotorEncoder7.GetAbsolutePosition());
     frc::SmartDashboard::PutNumber("Arm PID Target", ArmPIDController.GetSetpoint());
     frc::SmartDashboard::PutNumber("Tele PID Target", TelePIDController.GetSetpoint());
 
@@ -220,6 +223,8 @@ void Subsystems::SetTelePIDTarget(int target)
 
 int Subsystems::GetArmEncoderAngle()
 {
-    return (ArmMotorEncoder.GetAbsolutePosition() - 0.16)*(90/0.065);
+    return 
+        (int)((int)(((int)ArmMotorEncoder.GetAbsolutePosition() - 782) 
+        *(90/0.065))% 360);
 }
     

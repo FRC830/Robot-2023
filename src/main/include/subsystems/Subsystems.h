@@ -34,7 +34,6 @@ class Subsystems : public frc2::SubsystemBase
         void SubsystemsInit ();
         void SubsystemsPeriodic ();
         frc::DigitalInput teleSwitch {0};  
-    private:
         //Constants
         double GrabberWheelSpeeds = 1.0;
 
@@ -64,7 +63,10 @@ class Subsystems : public frc2::SubsystemBase
         rev::CANSparkMax GrabberWheelsMotor =  rev::CANSparkMax(10, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
 
         rev::CANSparkMax ArmMotor = rev::CANSparkMax(11, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
-        frc::AnalogEncoder ArmMotorEncoder {5};
+        frc::AnalogEncoder ArmMotorEncoder {6};
+        frc::AnalogEncoder ArmMotorEncoder5 {5};
+        //frc::AnalogEncoder ArmMotorEncoder6 {6};
+        frc::AnalogEncoder ArmMotorEncoder7 {7};
 
 
         rev::CANSparkMax teleMotor = rev::CANSparkMax(12, rev::CANSparkMaxLowLevel::MotorType::kBrushless);

@@ -126,6 +126,8 @@ void Robot::RobotPeriodic() noexcept
 
   frc::SmartDashboard::PutBoolean("limit switch", m_subsystems.teleSwitch.Get());
   frc::SmartDashboard::PutNumber("co RightY", m_Copilot.GetRightY());
+
+  frc::SmartDashboard::PutNumber("arm position", m_subsystems.GetArmEncoderAngle());
   
   frc2::CommandScheduler::GetInstance().Run();
 
