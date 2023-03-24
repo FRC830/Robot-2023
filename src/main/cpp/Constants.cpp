@@ -10,8 +10,8 @@ int physical::kRearRightAlignmentOffset = 284;
 // int physical::kRearLeftAlignmentOffset = 62;
 // int physical::kRearRightAlignmentOffset = 291;
 
-double pidf::kArmP = 0.025;
-double pidf::kArmI = 0.0032;
+double pidf::kArmP = 0.02;
+double pidf::kArmI = 0.0064;
 double pidf::kArmD = 0.0;
 double pidf::kArmF = 0.0;
 

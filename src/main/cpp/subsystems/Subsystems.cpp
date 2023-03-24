@@ -39,17 +39,10 @@ void Subsystems::SubsystemsPeriodic()
 {
     frc::SmartDashboard::PutNumber("Arm Motor Speed From PID", ArmPIDController.Calculate(GetArmEncoderAngle()));
     ArmMotor.Set(ArmPIDController.Calculate(GetArmEncoderAngle()));
-    SetArmPIDF
-    (
-        frc::SmartDashboard::GetNumber("ArmPCoefficient", pidf::kArmP), 
-        frc::SmartDashboard::GetNumber("ArmI", pidf::kArmI), 
-        frc::SmartDashboard::GetNumber("ArmD", pidf::kArmD)
-    ); //-15, full extension is scoring
-    // SetArmPIDF
-    // (
-    //     sin(GetArmEncoderAngle()*(3.14 /180)) * TeleMotorEncoder.GetPosition() * 
-    //         frc::SmartDashboard::GetNumber("ArmPCoefficient", pidf::kArmP) +
-    //         frc::SmartDashboard::GetNumber("ArmPAdder", 0), 
+    //SetArmPIDF
+    //(
+        //'rc::SmartDashboard::GetNumber("ArmPCoeffic     frc::SmartDashboard::GetNumber("ArmPCoefficient", pidf::kArmP) +=-98U
+    //         frc::SmartDashboard::GetNumber("ArmPAdder", 0), `GDCZ
     //     frc::SmartDashboard::GetNumber("ArmI", pidf::kArmI), 
     //     frc::SmartDashboard::GetNumber("ArmD", pidf::kArmD)
     // );
@@ -142,8 +135,8 @@ void Subsystems::ToggleGrabberPnumatics()
 }
 void Subsystems::SetGrabberPnumatics(bool state)
 {
-    GrabberSolenoid.Set(state);
-    GrabberOnOff = state;
+    GrabberSolenoid.Set(!state);
+    GrabberOnOff = !state;
 }
 void Subsystems::SetArmPIDF(double p, double i, double d)
 {
@@ -224,7 +217,7 @@ void Subsystems::SetTelePIDTarget(int target)
 int Subsystems::GetArmEncoderAngle()
 {
     return 
-        (int)((int)(((int)ArmMotorEncoder.GetAbsolutePosition() - 782) 
-        *(90/0.065))% 360);
+        (ArmMotorEncoder.GetAbsolutePosition()
+        * (90/0.065)) - 29;
 }
     

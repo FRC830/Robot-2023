@@ -124,6 +124,7 @@ void Robot::RobotInit() noexcept
 void Robot::RobotPeriodic() noexcept
 {
 
+
   frc::SmartDashboard::PutBoolean("limit switch", m_subsystems.teleSwitch.Get());
   frc::SmartDashboard::PutNumber("co RightY", m_Copilot.GetRightY());
 
@@ -307,17 +308,17 @@ void Robot::TeleopPeriodic() noexcept {
 
   if (m_Copilot.GetXButton())
   {
-    m_subsystems.SetArmPIDTarget(-14);
+    m_subsystems.SetArmPIDTarget(-84);
     //m_subsystems.SetTelePIDTarget(0);
   }
   else if (m_Copilot.GetYButton())
   {
-    m_subsystems.SetArmPIDTarget(55);
+    m_subsystems.SetArmPIDTarget(-99);
     m_subsystems.SetTelePIDTarget(-18.6);
   }
   else if (m_Copilot.GetAButton())
   {
-    m_subsystems.SetArmPIDTarget(0);
+    m_subsystems.SetArmPIDTarget(-64);
     //m_subsystems.SetTelePIDTarget(0);
   }
 

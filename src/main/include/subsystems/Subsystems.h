@@ -37,10 +37,10 @@ class Subsystems : public frc2::SubsystemBase
         //Constants
         double GrabberWheelSpeeds = 1.0;
 
-        double ArmSpeed = 1.35;
+        double ArmSpeed = 0.75;
 
-        int MinArmAngle = -60;
-        int MaxArmAngle = 62;
+        int MinArmAngle = -100;
+        int MaxArmAngle = -60;
         int ArmAngleBufferSize = 20;
 
         double TeleSpeed = 0.45;
@@ -50,7 +50,7 @@ class Subsystems : public frc2::SubsystemBase
   
         
         //Status Variables
-        bool GrabberOnOff = false;
+        bool GrabberOnOff = true;
         bool hasCalibratedTele = false;
  
         //PID Control
